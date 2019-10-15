@@ -1,0 +1,26 @@
+{
+  "name": "swapi-exercise",
+  "version": "1.0.0",
+  "description": "exercise for grow",
+  "main": "index.js",
+  "scripts": {
+    "server": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dyiar/swapi-exercise.git"
+  },
+  "author": "Austin Blake",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dyiar/swapi-exercise/issues"
+  },
+  "homepage": "https://github.com/dyiar/swapi-exercise#readme",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.3"
+  }
+}
