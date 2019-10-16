@@ -75,7 +75,7 @@ server.get(`/people/:sortby?`, async (req, res, next) => {
     Object.keys(peopleHash).forEach(key => {
       people.push(peopleHash[key]);
     });
-    people.sort(compare(sortBy));
+    people.sort(compare(sortBy[0]));
     res.status(200).send(people);
   } else {
     try {
@@ -120,7 +120,7 @@ server.get(`/planets`, async (req, res, next) => {
       while (count <= planets.length - 1) {
         for (i = 0; i <= planets[count].residents.length - 1; i++) {
           planets[count].residents[i] =
-            peopleHash[planets[count].residents[i].name];
+            peopleHash[planets[count].residents[i]].name;
         }
         count += 1;
       }
