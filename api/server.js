@@ -67,45 +67,40 @@ function compare(key) {
 
 // routes
 
-server.get(`/people/:sortBy`, async (req, res, next) => {
-  const sortBy = req.params.sortBy;
+server.get(`/people/:sortby?`, async (req, res, next) => {
+  const sortBy = Object.values(req.params);
 
   if (Object.keys(peopleHash).length === 87) {
-      let people = []
-      Object.keys(peopleHash).forEach(key => {
-          people.push(peopleHash[key])
-      })
-      people.sort(compare(sortBy))
-      res.status(200).send(people)
-  }
-  else {
-  try {
-    let response = await axios.get(`${baseURL}/people`);
-    let people = await response.data.results;
-    let next = await response.data.next;
-
-    // console.log(next);
-
-    while (next != null) {
-      response = await axios.get(next);
-      people = await people.concat(response.data.results);
-      next = await response.data.next;
-    }
-
+    let people = [];
+    Object.keys(peopleHash).forEach(key => {
+      people.push(peopleHash[key]);
+    });
     people.sort(compare(sortBy));
-
-    // console.log(next);
     res.status(200).send(people);
-    if (Object.keys(peopleHash).length === 0) {
-      // console.log('create')
-      for (i = 0; i <= people.length - 1; i++) {
-        peopleHash[people[i].url] = people[i];
+  } else {
+    try {
+      let response = await axios.get(`${baseURL}/people`);
+      let people = await response.data.results;
+      let next = await response.data.next;
+
+      while (next != null) {
+        response = await axios.get(next);
+        people = await people.concat(response.data.results);
+        next = await response.data.next;
       }
+
+      people.sort(compare(sortBy));
+      res.status(200).send(people);
+
+      if (Object.keys(peopleHash).length === 0) {
+        for (i = 0; i <= people.length - 1; i++) {
+          peopleHash[people[i].url] = people[i];
+        }
+      }
+    } catch (error) {
+      return next(error);
     }
-  } catch (error) {
-    return next(error);
   }
-}
 });
 
 server.get(`/planets`, async (req, res, next) => {
@@ -120,54 +115,27 @@ server.get(`/planets`, async (req, res, next) => {
       next = await response.data.next;
     }
 
-    // planets[i][residents] will be the array
-
-    // while (count <= planetsTemp.length-1) {
-
-    //     for (i = 0; i <= planetsTemp[count].residents.length -1; i++) {
-    //         if (Object.keys(peopleHash).length != 0) {
-    //             planetsTemp[count].residents[i] = peopleHash[planetsTemp[count].residents[i]]
-    //         } else{
-    //             temp = await axios.get(planetsTemp[count].residents[i])
-    //             // console.log(planetsTemp[i].residents)
-    //             // console.log(temp)
-    //             planetsTemp[count].residents[i] = await temp.data.name
-    //         }
-
-    //     }
-    //     count += 1
-    // }
-
-    // res.send(planetsTemp)
-
     if (Object.keys(peopleHash).length === 87) {
-        let count = 0
-        while (count <= planets.length - 1) {
-            // console.log("135")
-          for (i = 0; i <= planets[count].residents.length - 1; i++) {
-        planets[count].residents[i] = peopleHash[planets[count].residents[i].name];
-          }
-          count += 1
+      let count = 0;
+      while (count <= planets.length - 1) {
+        for (i = 0; i <= planets[count].residents.length - 1; i++) {
+          planets[count].residents[i] =
+            peopleHash[planets[count].residents[i].name];
         }
-    } else {
-
-        let count = 0;
-    // console.log(planets.length, "133");
-    while (count <= planets.length - 1) {
-        // console.log("135")
-      for (i = 0; i <= planets[count].residents.length - 1; i++) {
-        //   console.log("137")
-          temp = await axios.get(planets[count].residents[i]);
-          peopleHash[temp.data.url] = await temp.data
-          planets[count].residents[i] = await temp.data.name;
-        
+        count += 1;
       }
-      count += 1;
+    } else {
+      let count = 0;
+      while (count <= planets.length - 1) {
+        for (i = 0; i <= planets[count].residents.length - 1; i++) {
+          temp = await axios.get(planets[count].residents[i]);
+          peopleHash[temp.data.url] = await temp.data;
+          planets[count].residents[i] = await temp.data.name;
+        }
+        count += 1;
+      }
     }
-    }
-    res.status(200).send(planets)
-    // console.log(peopleHash)
-
+    res.status(200).send(planets);
   } catch (error) {
     return next(error);
   }
