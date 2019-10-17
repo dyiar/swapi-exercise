@@ -1,3 +1,13 @@
+Manual testing was done by running server on localhost and using the browser to hit endpoints. 
+
+The /people endpoint takes an optional query param. /people returns the default array as provided by SWAPI. /people/name returns a sorted array starting with A. /people/mass returns a sorted array starting with the smallest mass. /people/height returns a sorted array starting with the shortest height. All unknowns are included at the end of the array.
+
+The /planet endpoint returns an array of planet objects and include the names of the residents instead of the URLs. 
+
+Both endpoints have been tested with jest tests.
+
+The intial server request will be the longest, but after that, any further request should be faster due to storing the people data in an object on the server. 
+
 # node-exercise
 A little exercise using a Star Wars API [https://swapi.co/](https://swapi.co/)
 
